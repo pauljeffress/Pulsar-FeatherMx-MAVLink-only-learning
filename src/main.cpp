@@ -45,18 +45,37 @@ void MavLink_receive()
       switch(msg.msgid)
       {
 
-        case MAVLINK_MSG_ID_GPS_RAW_INT:
-      {
+      //handle heartbeat message
+      case MAVLINK_MSG_ID_HEARTBEAT:
+        {
+        mavlink_heartbeat_t hb;
+        mavlink_msg_heartbeat_decode(&msg,&hb);
+        
+        Serial.println();
+        Serial.print("Millis: ")                   ;Serial.print(millis());
+        Serial.print("\nFlight Mode: (10 is auto)");Serial.println(hb.custom_mode);
+        Serial.print("Type: ");                     Serial.println(hb.type);
+        Serial.print("Autopilot: ");                Serial.println(hb.autopilot);
+        Serial.print("Base Mode: ");                Serial.println(hb.base_mode);
+        Serial.print("System Status: ");            Serial.println(hb.system_status);
+        Serial.print("Mavlink Version: ");          Serial.println(hb.mavlink_version); 
+      }
+
+      case MAVLINK_MSG_ID_GPS_RAW_INT:
+        {
         mavlink_gps_raw_int_t packet;
         mavlink_msg_gps_raw_int_decode(&msg, &packet);
-        
-        Serial.print("\nGPS Fix: ");Serial.println(packet.fix_type);
-        Serial.print("GPS Latitude: ");Serial.println(packet.lat);
-        Serial.print("GPS Longitude: ");Serial.println(packet.lon);
-        Serial.print("GPS Speed: ");Serial.println(packet.vel);
-        Serial.print("Sats Visible: ");Serial.println(packet.satellites_visible);
-       
-      }
+
+        Serial.println();
+        Serial.print("\nGPS Fix: ");Serial.print(packet.fix_type);
+        Serial.print("  GPS Latitude: ");Serial.print(packet.lat);
+        Serial.print("  GPS Longitude: ");Serial.print(packet.lon);
+        Serial.print("  GPS Speed: ");Serial.print(packet.vel);
+        Serial.print("  Sats Visible: ");Serial.println(packet.satellites_visible);
+        }
+
+
+
       break;
 
       }
